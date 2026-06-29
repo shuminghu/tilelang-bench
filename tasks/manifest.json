@@ -1,0 +1,610 @@
+{
+  "total": 100,
+  "by_track": {
+    "perf": 30,
+    "implement": 56,
+    "debug": 14
+  },
+  "tasks": [
+    {
+      "id": "debug_abs_fp16",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_abs_fp16",
+      "speedup": null
+    },
+    {
+      "id": "debug_abs_fp32",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_abs_fp32",
+      "speedup": null
+    },
+    {
+      "id": "debug_add_fp16",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_add_fp16",
+      "speedup": null
+    },
+    {
+      "id": "debug_add_fp32",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_add_fp32",
+      "speedup": null
+    },
+    {
+      "id": "debug_gemm_noclear_fp16",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_gemm_noclear_fp16",
+      "speedup": null
+    },
+    {
+      "id": "debug_gemm_noclear_fp32",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_gemm_noclear_fp32",
+      "speedup": null
+    },
+    {
+      "id": "debug_mul_fp16",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_mul_fp16",
+      "speedup": null
+    },
+    {
+      "id": "debug_mul_fp32",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_mul_fp32",
+      "speedup": null
+    },
+    {
+      "id": "debug_relu_fp16",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_relu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "debug_relu_fp32",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_relu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "debug_square_fp16",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_square_fp16",
+      "speedup": null
+    },
+    {
+      "id": "debug_square_fp32",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_square_fp32",
+      "speedup": null
+    },
+    {
+      "id": "debug_sub_fp16",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_sub_fp16",
+      "speedup": null
+    },
+    {
+      "id": "debug_sub_fp32",
+      "track": "debug",
+      "dir": "/home/shuming/repo-eval/tasks/debug/debug_sub_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_abs_diff_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_abs_diff_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_abs_diff_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_abs_diff_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_abs_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_abs_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_abs_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_abs_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_add_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_add_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_add_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_add_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_add_relu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_add_relu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_add_relu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_add_relu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_add_sq_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_add_sq_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_add_sq_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_add_sq_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_avg_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_avg_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_avg_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_avg_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_bias_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_bias_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_bias_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_bias_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_cast_f32f16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_cast_f32f16",
+      "speedup": null
+    },
+    {
+      "id": "impl_clamp01_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_clamp01_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_clamp01_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_clamp01_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_diff_sq_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_diff_sq_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_diff_sq_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_diff_sq_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_exp_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_exp_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_exp_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_exp_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_gelu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_gelu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_gelu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_gelu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_gemm_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_gemm_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_gemm_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_gemm_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_gemv_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_gemv_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_gemv_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_gemv_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_leakyrelu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_leakyrelu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_leakyrelu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_leakyrelu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_max_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_max_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_max_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_max_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_max_relu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_max_relu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_max_relu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_max_relu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_min_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_min_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_min_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_min_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_mul_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_mul_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_mul_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_mul_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_mul_relu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_mul_relu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_mul_relu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_mul_relu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_neg_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_neg_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_neg_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_neg_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_relu6_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_relu6_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_relu6_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_relu6_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_relu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_relu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_relu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_relu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_sigmoid_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_sigmoid_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_sigmoid_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_sigmoid_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_silu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_silu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_silu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_silu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_square_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_square_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_square_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_square_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_sub_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_sub_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_sub_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_sub_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_sub_relu_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_sub_relu_fp16",
+      "speedup": null
+    },
+    {
+      "id": "impl_sub_relu_fp32",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_sub_relu_fp32",
+      "speedup": null
+    },
+    {
+      "id": "impl_tanh_fp16",
+      "track": "implement",
+      "dir": "/home/shuming/repo-eval/tasks/implement/impl_tanh_fp16",
+      "speedup": null
+    },
+    {
+      "id": "perf_gemm_bf16_deep",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_deep",
+      "speedup": 6.349
+    },
+    {
+      "id": "perf_gemm_bf16_fat",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_fat",
+      "speedup": 3.767
+    },
+    {
+      "id": "perf_gemm_bf16_fat2",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_fat2",
+      "speedup": 5.95
+    },
+    {
+      "id": "perf_gemm_bf16_kheavy",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_kheavy",
+      "speedup": 5.949
+    },
+    {
+      "id": "perf_gemm_bf16_kmid",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_kmid",
+      "speedup": 3.613
+    },
+    {
+      "id": "perf_gemm_bf16_mix",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_mix",
+      "speedup": 5.818
+    },
+    {
+      "id": "perf_gemm_bf16_mix2",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_mix2",
+      "speedup": 5.206
+    },
+    {
+      "id": "perf_gemm_bf16_rect",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_rect",
+      "speedup": 6.003
+    },
+    {
+      "id": "perf_gemm_bf16_small",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_small",
+      "speedup": 1.208
+    },
+    {
+      "id": "perf_gemm_bf16_sq2k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_sq2k",
+      "speedup": 2.764
+    },
+    {
+      "id": "perf_gemm_bf16_sq3k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_sq3k",
+      "speedup": 4.491
+    },
+    {
+      "id": "perf_gemm_bf16_sq4k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_sq4k",
+      "speedup": 5.591
+    },
+    {
+      "id": "perf_gemm_bf16_sq5k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_sq5k",
+      "speedup": 5.691
+    },
+    {
+      "id": "perf_gemm_bf16_sq6k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_sq6k",
+      "speedup": 5.988
+    },
+    {
+      "id": "perf_gemm_bf16_sq7k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_sq7k",
+      "speedup": 6.109
+    },
+    {
+      "id": "perf_gemm_bf16_tall",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_tall",
+      "speedup": 4.256
+    },
+    {
+      "id": "perf_gemm_bf16_tall2",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_tall2",
+      "speedup": 4.924
+    },
+    {
+      "id": "perf_gemm_bf16_wide",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_bf16_wide",
+      "speedup": 4.359
+    },
+    {
+      "id": "perf_gemm_fp16_deep",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_deep",
+      "speedup": 6.268
+    },
+    {
+      "id": "perf_gemm_fp16_fat",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_fat",
+      "speedup": 3.747
+    },
+    {
+      "id": "perf_gemm_fp16_fat2",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_fat2",
+      "speedup": 5.973
+    },
+    {
+      "id": "perf_gemm_fp16_kheavy",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_kheavy",
+      "speedup": 5.866
+    },
+    {
+      "id": "perf_gemm_fp16_kmid",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_kmid",
+      "speedup": 3.525
+    },
+    {
+      "id": "perf_gemm_fp16_mix",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_mix",
+      "speedup": 5.711
+    },
+    {
+      "id": "perf_gemm_fp16_mix2",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_mix2",
+      "speedup": 5.204
+    },
+    {
+      "id": "perf_gemm_fp16_rect",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_rect",
+      "speedup": 5.977
+    },
+    {
+      "id": "perf_gemm_fp16_small",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_small",
+      "speedup": 1.285
+    },
+    {
+      "id": "perf_gemm_fp16_sq2k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_sq2k",
+      "speedup": 2.97
+    },
+    {
+      "id": "perf_gemm_fp16_sq3k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_sq3k",
+      "speedup": 4.467
+    },
+    {
+      "id": "perf_gemm_fp16_sq4k",
+      "track": "perf",
+      "dir": "/home/shuming/repo-eval/tasks/perf/perf_gemm_fp16_sq4k",
+      "speedup": 5.558
+    }
+  ]
+}

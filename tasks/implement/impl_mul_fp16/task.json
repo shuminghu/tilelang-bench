@@ -1,0 +1,12 @@
+{
+  "id": "impl_mul_fp16",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N) returning a compiled TileLang kernel computing C = A mul B elementwise for MxN fp16 tensors. kernel(A, B) -> C.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}

@@ -1,0 +1,18 @@
+{
+  "id": "perf_gemm_bf16_sq6k",
+  "track": "perf",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Optimize the slow bf16 GEMM in solution.py so build(M,N,K) returns a fast, correct compiled kernel (C=A@B). Tune tiling/pipeline/threads. Only edit solution.py.",
+  "tolerance": {
+    "rtol": 0.02,
+    "atol": 0.02
+  },
+  "measure": {
+    "warmup": 25,
+    "iters": 50,
+    "rounds": 10,
+    "rel_std_max": 4.0,
+    "remeasure": 2
+  }
+}

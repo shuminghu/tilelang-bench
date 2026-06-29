@@ -1,0 +1,12 @@
+{
+  "id": "debug_add_fp16",
+  "track": "debug",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "A TileLang kernel in solution.py has a bug. It should compute C = A add B elementwise (fp16). Fix solution.py so the kernel is correct. Only edit solution.py.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}

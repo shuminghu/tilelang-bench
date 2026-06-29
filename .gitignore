@@ -1,0 +1,15 @@
+# virtualenvs (multi-GB, reproducible)
+.venv/
+.venv-agent/
+
+# external source clone (has its own git history)
+tilelang/
+
+# run artifacts: agent workspaces, trajectories, logs (large/regenerated)
+runs/
+
+# python caches
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/

@@ -1,0 +1,12 @@
+{
+  "id": "debug_gemm_noclear_fp16",
+  "track": "debug",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "A TileLang kernel in solution.py has a bug. It should compute C = A @ B (fp16). Fix solution.py so the kernel is correct. Only edit solution.py.",
+  "tolerance": {
+    "rtol": 0.02,
+    "atol": 0.02
+  },
+  "require_tilelang": true
+}

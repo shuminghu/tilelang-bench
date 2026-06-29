@@ -1,0 +1,12 @@
+{
+  "id": "impl_bias_fp16",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N): C[m,n] = A[m,n] + bias[n] (fp16). kernel(A, bias) -> C.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}

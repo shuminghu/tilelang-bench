@@ -1,0 +1,12 @@
+{
+  "id": "impl_gemm_fp16",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N, K): C = A @ B, A:[M,K] B:[K,N] (fp16). kernel(A, B) -> C.",
+  "tolerance": {
+    "rtol": 0.02,
+    "atol": 0.02
+  },
+  "require_tilelang": true
+}

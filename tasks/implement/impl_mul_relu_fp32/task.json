@@ -1,0 +1,12 @@
+{
+  "id": "impl_mul_relu_fp32",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N) computing C = mul_relu(A, B) elementwise (fp32). kernel(A, B) -> C.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}

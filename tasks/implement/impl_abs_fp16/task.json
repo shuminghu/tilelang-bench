@@ -1,0 +1,12 @@
+{
+  "id": "impl_abs_fp16",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N) returning a compiled TileLang kernel that computes C = abs(A) elementwise for an MxN fp16 tensor. kernel(A) -> C.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}

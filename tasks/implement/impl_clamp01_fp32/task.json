@@ -1,0 +1,12 @@
+{
+  "id": "impl_clamp01_fp32",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N) returning a compiled TileLang kernel that computes C = clamp01(A) elementwise for an MxN fp32 tensor. kernel(A) -> C.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}

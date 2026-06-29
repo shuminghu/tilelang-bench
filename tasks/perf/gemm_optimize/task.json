@@ -1,0 +1,9 @@
+{
+  "id": "perf_gemm_optimize",
+  "track": "perf",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "The file solution.py contains a working but slow fp16 GEMM kernel written in TileLang. Optimize it so that build(M, N, K) returns a compiled kernel computing C = A @ B as fast as possible on the GPU, while remaining numerically correct (rtol=1e-2, atol=1e-2). You may change block sizes, pipeline stages, thread count, add L2 swizzling, layout annotations, etc. The returned kernel must be callable as kernel(A, B) -> C. Only edit solution.py.",
+  "tolerance": { "rtol": 0.01, "atol": 0.01 },
+  "measure": { "warmup": 30, "iters": 50, "rounds": 12, "rel_std_max": 4.0, "remeasure": 2 }
+}

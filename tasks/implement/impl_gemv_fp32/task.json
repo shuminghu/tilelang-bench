@@ -1,0 +1,12 @@
+{
+  "id": "impl_gemv_fp32",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(N, K): C = B @ A where A:[K], B:[N,K], C:[N] (fp32). kernel(A, B) -> C.",
+  "tolerance": {
+    "rtol": 0.02,
+    "atol": 0.02
+  },
+  "require_tilelang": true
+}

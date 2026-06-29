@@ -1,0 +1,12 @@
+{
+  "id": "impl_softmax_fp32",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N) computing row softmax over N (fp32). kernel(A) -> C.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}

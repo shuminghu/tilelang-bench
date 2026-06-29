@@ -1,0 +1,12 @@
+{
+  "id": "impl_max_fp32",
+  "track": "implement",
+  "entrypoint": "solution.py",
+  "grader": "problem.py",
+  "prompt": "Implement build(M, N) returning a compiled TileLang kernel computing C = A max B elementwise for MxN fp32 tensors. kernel(A, B) -> C.",
+  "tolerance": {
+    "rtol": 0.01,
+    "atol": 0.01
+  },
+  "require_tilelang": true
+}
