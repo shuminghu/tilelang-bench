@@ -42,6 +42,12 @@ def main():
     ap.add_argument("--repeats", type=int, default=1, help="runs per (model,task) for noise")
     ap.add_argument("--tag", default="", help="suffix for run_id/workspace, to isolate "
                     "concurrent sweeps that share the same NFS (e.g. a hostname)")
+    ap.add_argument("--resume", action="store_true",
+                    help="reuse good rows already in --out; only (re)run missing or "
+                         "auth/balance-failed (model,task,rep) jobs")
+    ap.add_argument("--shuffle", action="store_true",
+                    help="randomize job order so a mid-run budget cutoff degrades "
+                         "proportionally across tracks instead of starving the last one")
     args = ap.parse_args()
 
     models = [m.strip() for m in args.models.split(",") if m.strip()]
@@ -61,6 +67,22 @@ def main():
     jobs = [(m, t, r) for t in tasks for m in models for r in range(args.repeats)]
     rows = []
     lock = threading.Lock()
+
+    # Resume: keep already-good rows; only (re)run missing or auth/balance-failed jobs.
+    if args.resume and out.exists():
+        def is_good(e):
+            e = str(e)
+            return "Authentication" not in e and "balance" not in e and e != "runner_error"
+        prev = {(r["model"], r["task"], r.get("rep", 0)): r
+                for r in json.loads(out.read_text()).get("rows", [])}
+        kept = {k: r for k, r in prev.items() if is_good(r.get("exit"))}
+        rows.extend(kept.values())
+        jobs = [(m, t, r) for (m, t, r) in jobs if (m, Path(t).name, r) not in kept]
+        print(f"resume: kept {len(kept)} good rows; re-running {len(jobs)} jobs", flush=True)
+
+    if args.shuffle:
+        import random
+        random.shuffle(jobs)
 
     def flush():
         agg = defaultdict(list)
