@@ -1,9 +1,10 @@
 # TileLang Coding-Agent Benchmark — Report
 
 > Status: **DRAFT** — environment / tasks / scoring are final; the Results section is a
-> **live snapshot of the in-progress 300-run sweep** (`runs/sweep_full.json`, ~169/300
+> **live snapshot of the in-progress 300-run sweep** (`runs/sweep_full.json`, ~209/300
 > runs at last refresh) and will be finalized when it completes. Debug (14/14 per model)
-> is complete; **perf and implement are still partial** so those means will shift.
+> and implement (44–47/56) are complete/near-complete; **perf is still partial**
+> (≈7–11 of 30 per model) so those means will shift.
 > Regenerate with
 > `python harness/report.py --sweep runs/sweep_full.json --manifest tasks/manifest.json`.
 
@@ -72,8 +73,11 @@ overflow) and gemv-perf (no clean speed knob) — see Shortcomings.
   message fields that some providers reject on multi-turn.
 - **Per-run evaluation limits** (identical for every model, and identical across the
   original and resumed portions of the sweep — verified from launch commands):
-  - **Step limit: 25** agent steps (LLM turn + one shell command each). Hitting it ends
-    the run as `LimitsExceeded`.
+  - **Step limit: 25** LLM turns (`n_calls`, checked before each model query). The
+    system prompt mandates exactly one shell command per turn (chained with `&&`/`||`
+    if needed), so in practice steps ≈ shell commands; the loop would run multiple
+    commands in a turn if the model emitted multiple tool-calls, but that doesn't occur
+    under this prompt. Hitting the limit ends the run as `LimitsExceeded`.
   - **Cost limit: \$0.50** per run (litellm-accounted spend). Hitting it ends the run as
     `LimitsExceeded`.
   - **Per-command timeout: 600 s** (`--timeout`, the default) for each shell command the
@@ -89,35 +93,40 @@ overflow) and gemv-perf (no clean speed knob) — see Shortcomings.
   (Also confirmed working: `qwen3.5-plus`, `glm-5`, `kimi-k2.5`.)
 
 ## 7. Results
-> Live snapshot, sweep in progress (~169/300 runs). **Debug complete (14/14 per model);
-> perf & implement still partial** — perf especially (only 0–5 of 30 done per model), so
-> those cells will move. Regenerate with `harness/report.py`.
+> Live snapshot, sweep in progress (~209/300 runs). **Debug + implement complete/near-complete;
+> perf still partial** (≈7–11 of 30 per model), so the perf column will still move.
+> Regenerate with `harness/report.py`.
 
 ```
 model                     perf   implement       debug         all    runs
 --------------------------------------------------------------------------
-claude-haiku-4-5        1.000       0.630       0.929       0.717       57
-gpt-5.4-mini            0.764       0.564       0.929       0.669       58
-deepseek-v4-flash            -      0.125       1.000       0.352       54
+claude-haiku-4-5        1.000       0.678       0.929       0.776       72
+gpt-5.4-mini            0.779       0.574       0.929       0.675       72
+deepseek-v4-flash       0.572       0.136       1.000       0.369       65
 
 (tracks show mean score in [0,1]; per-task n varies)
 
 exit-status breakdown:
-  claude-haiku-4-5   Submitted:31, LimitsExceeded:24, RepeatedFormatError:2
-  gpt-5.4-mini       Submitted:44, LimitsExceeded:14
-  deepseek-v4-flash  LimitsExceeded:37, Submitted:17
+  claude-haiku-4-5   Submitted:40, LimitsExceeded:30, RepeatedFormatError:2
+  gpt-5.4-mini       Submitted:54, LimitsExceeded:18
+  deepseek-v4-flash  LimitsExceeded:47, Submitted:18
 ```
-*(perf n so far: claude 2, gpt 5, deepseek 0 of 30 each — not yet representative.)*
+*(perf n so far: claude 11, gpt 11, deepseek 7 of 30 — partial but now indicative.)*
 
-Early observations (preliminary — debug is the only complete track):
-- **Debug discriminates cleanly and is complete:** `deepseek-v4-flash` **1.00**,
-  `claude-haiku-4-5`/`gpt-5.4-mini` **0.93** — all three can repair planted bugs well.
-- **Implement separates the field:** `claude-haiku-4-5` (0.63) ≳ `gpt-5.4-mini` (0.56) ≫
-  `deepseek-v4-flash` (0.13). DeepSeek can *fix* kernels but rarely *authors* one from
-  scratch within budget — it `LimitsExceeded` on 37/54 runs vs Submitting only 17.
-- **Perf too partial to rank** (≤5 runs/model); the few completed runs land between
-  baseline and repo-tuned (e.g. gpt 0.76), confirming the perf gate is live end-to-end.
-- **Track-level spread** (debug ≫ implement, model-dependent perf) shows the benchmark is
+Early observations (perf still filling in):
+- **Overall ranking is stable:** `claude-haiku-4-5` (0.78) > `gpt-5.4-mini` (0.68) >
+  `deepseek-v4-flash` (0.37).
+- **Debug (complete) discriminates cleanly:** `deepseek-v4-flash` **1.00**,
+  `claude-haiku-4-5`/`gpt-5.4-mini` **0.93** — all three repair planted bugs well; this is
+  the easiest track.
+- **Implement separates the field:** `claude-haiku-4-5` (0.68) ≳ `gpt-5.4-mini` (0.57) ≫
+  `deepseek-v4-flash` (0.14). DeepSeek can *fix* kernels but rarely *authors* one from
+  scratch within budget — it `LimitsExceeded` on 47/65 runs vs Submitting only 18.
+- **Perf is the hardest track and most discriminative:** on the completed subset
+  `claude` reaches the repo-tuned target (1.00), `gpt` lands mid (0.78), `deepseek` low
+  (0.57) — confirming the correctness-gated log-speedup gate is live and far from
+  saturated.
+- **Track spread** (debug ≫ implement ≳ perf, model-dependent) shows the benchmark is
   informative rather than saturated.
 
 ## 8. Shortcomings
