@@ -12,6 +12,28 @@ kernels. That makes it hard to saturate (a model must actually understand tiling
 pipelining, memory layout, and the hardware), and the repo ships verified tuned
 kernels + regression tests we can reuse as ground truth.
 
+## Why these kernel families
+The `k_*` templates in `gen_tasks.py` are hand-authored TileLang kernels written to the
+repo's own idioms (notably `examples/norm/rms_norm.py`'s one-row-per-block schedule for the
+reductions/norms, and the canonical `alloc_shared`+`T.Pipelined`+`T.gemm` matmul pattern for
+GEMM). Each is first proven to compile + match a torch reference in `harness/kernels_probe.py`
+/ `kernels_probe2.py` — **only PASSing templates get baked into `gen_tasks.py`**.
+
+They are chosen to span the axes a tiling DSL actually stresses, in increasing difficulty,
+while each keeps a trivial torch oracle for scoring:
+- **elementwise** (`unary`/`binary`/`fused`): memory-bound baseline, `T.Parallel` indexing.
+- **layout** (`bias` broadcast, `transpose/swizzle`, `cast`): broadcasting, layout, dtypes.
+- **reduction** (`reduce`/`softmax`/`rmsnorm`/`layernorm`): cross-thread reductions + layout
+  inference (the part that broke at `bM=8`); these replace trivial pointwise tasks to raise
+  the implement-track difficulty floor.
+- **matmul** (`gemv`, then `gemm`): tiling, shared memory, software pipelining (`num_stages`),
+  `T.gemm` MMA — exactly the knobs the perf track grades.
+
+Two further reasons for this set: (1) the families mirror what TileLang is *for* (they map to
+the repo's example workloads, not arbitrary ops), and (2) each kernel suits all three tracks —
+it can be stubbed (implement), detuned (perf), or bugged (debug). GEMM is the canonical perf
+example because its tuning gap is large and measurable.
+
 ## Tracks (100 tasks total — as built & GPU-validated)
 
 | Track | Count | Agent does | Score in [0,1] | Scorer |

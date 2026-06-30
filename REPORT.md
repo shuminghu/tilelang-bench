@@ -1,10 +1,10 @@
 # TileLang Coding-Agent Benchmark — Report
 
 > Status: **DRAFT** — environment / tasks / scoring are final; the Results section is a
-> **live snapshot of the in-progress 300-run sweep** (`runs/sweep_full.json`, ~209/300
+> **live snapshot of the in-progress 300-run sweep** (`runs/sweep_full.json`, ~271/300
 > runs at last refresh) and will be finalized when it completes. Debug (14/14 per model)
-> and implement (44–47/56) are complete/near-complete; **perf is still partial**
-> (≈7–11 of 30 per model) so those means will shift.
+> and implement (53–54/56) are complete/near-complete; **perf is still partial**
+> (≈21–25 of 30 per model) so that column will still shift.
 > Regenerate with
 > `python harness/report.py --sweep runs/sweep_full.json --manifest tasks/manifest.json`.
 
@@ -93,39 +93,41 @@ overflow) and gemv-perf (no clean speed knob) — see Shortcomings.
   (Also confirmed working: `qwen3.5-plus`, `glm-5`, `kimi-k2.5`.)
 
 ## 7. Results
-> Live snapshot, sweep in progress (~209/300 runs). **Debug + implement complete/near-complete;
-> perf still partial** (≈7–11 of 30 per model), so the perf column will still move.
+> Live snapshot, sweep in progress (~271/300 runs). **Debug + implement complete/near-complete;
+> perf still partial** (≈21–25 of 30 per model), so the perf column will still move.
 > Regenerate with `harness/report.py`.
 
 ```
 model                     perf   implement       debug         all    runs
 --------------------------------------------------------------------------
-claude-haiku-4-5        1.000       0.678       0.929       0.776       72
-gpt-5.4-mini            0.779       0.574       0.929       0.675       72
-deepseek-v4-flash       0.572       0.136       1.000       0.369       65
+claude-haiku-4-5        0.754       0.712       0.929       0.756       91
+gpt-5.4-mini            0.847       0.604       0.929       0.719       92
+deepseek-v4-flash       0.587       0.132       1.000       0.379       88
 
 (tracks show mean score in [0,1]; per-task n varies)
 
 exit-status breakdown:
-  claude-haiku-4-5   Submitted:40, LimitsExceeded:30, RepeatedFormatError:2
-  gpt-5.4-mini       Submitted:54, LimitsExceeded:18
-  deepseek-v4-flash  LimitsExceeded:47, Submitted:18
+  claude-haiku-4-5   Submitted:48, LimitsExceeded:41, RepeatedFormatError:2
+  gpt-5.4-mini       Submitted:70, LimitsExceeded:22
+  deepseek-v4-flash  LimitsExceeded:68, Submitted:20
 ```
-*(perf n so far: claude 11, gpt 11, deepseek 7 of 30 — partial but now indicative.)*
+*(perf n so far: gpt 25, claude 23, deepseek 21 of 30 — partial; perf cell still volatile.)*
 
 Early observations (perf still filling in):
-- **Overall ranking is stable:** `claude-haiku-4-5` (0.78) > `gpt-5.4-mini` (0.68) >
-  `deepseek-v4-flash` (0.37).
+- **Overall ranking is stable:** `claude-haiku-4-5` (0.76) ≳ `gpt-5.4-mini` (0.72) ≫
+  `deepseek-v4-flash` (0.38). Claude and gpt are close; deepseek trails on authoring.
 - **Debug (complete) discriminates cleanly:** `deepseek-v4-flash` **1.00**,
   `claude-haiku-4-5`/`gpt-5.4-mini` **0.93** — all three repair planted bugs well; this is
   the easiest track.
-- **Implement separates the field:** `claude-haiku-4-5` (0.68) ≳ `gpt-5.4-mini` (0.57) ≫
-  `deepseek-v4-flash` (0.14). DeepSeek can *fix* kernels but rarely *authors* one from
-  scratch within budget — it `LimitsExceeded` on 47/65 runs vs Submitting only 18.
-- **Perf is the hardest track and most discriminative:** on the completed subset
-  `claude` reaches the repo-tuned target (1.00), `gpt` lands mid (0.78), `deepseek` low
-  (0.57) — confirming the correctness-gated log-speedup gate is live and far from
-  saturated.
+- **Implement separates the field:** `claude-haiku-4-5` (0.71) ≳ `gpt-5.4-mini` (0.60) ≫
+  `deepseek-v4-flash` (0.13). DeepSeek can *fix* kernels but rarely *authors* one from
+  scratch within budget — it `LimitsExceeded` on 68/88 runs vs Submitting only 20.
+- **Perf is the hardest track and most discriminative — and still shifting:** the perf
+  ranking has swapped between refreshes as new shapes land (now `gpt` 0.85 > `claude` 0.75
+  > `deepseek` 0.59), i.e. all three sit on partial credit between baseline and the
+  repo-tuned target. No model is pinned at 1.0, confirming the correctness-gated
+  log-speedup gate is live and far from saturated. Treat perf as provisional until the
+  last ~5 shapes/model finish.
 - **Track spread** (debug ≫ implement ≳ perf, model-dependent) shows the benchmark is
   informative rather than saturated.
 
