@@ -1,11 +1,11 @@
 # TileLang Coding-Agent Benchmark — Report
 
-> Status: **DRAFT** — environment / tasks / scoring are final; the Results section is a
-> **live snapshot of the in-progress 300-run sweep** (`runs/sweep_full.json`, ~271/300
-> runs at last refresh) and will be finalized when it completes. Debug (14/14 per model)
-> and implement (53–54/56) are complete/near-complete; **perf is still partial**
-> (≈21–25 of 30 per model) so that column will still shift.
-> Regenerate with
+> Status: **COMPLETE** — all 300 runs finished (100 tasks × 3 models). Environment /
+> tasks / scoring are final. Caveat: 2 of deepseek's 30 perf runs hung on a stalled
+> upstream API call (no wall-clock cap on the LLM request itself) and are currently
+> recorded as `runner_rc=-9` / score 0.0; they are being re-run with a hard 15-min
+> timeout, after which deepseek's perf mean will tick up slightly. All other 298 runs are
+> genuine. Regenerate with
 > `python harness/report.py --sweep runs/sweep_full.json --manifest tasks/manifest.json`.
 
 ## 1. Summary
@@ -93,43 +93,40 @@ overflow) and gemv-perf (no clean speed knob) — see Shortcomings.
   (Also confirmed working: `qwen3.5-plus`, `glm-5`, `kimi-k2.5`.)
 
 ## 7. Results
-> Live snapshot, sweep in progress (~271/300 runs). **Debug + implement complete/near-complete;
-> perf still partial** (≈21–25 of 30 per model), so the perf column will still move.
-> Regenerate with `harness/report.py`.
+Full sweep, **300/300 runs** (100 tasks × 3 models). Regenerate with `harness/report.py`.
 
 ```
 model                     perf   implement       debug         all    runs
 --------------------------------------------------------------------------
-claude-haiku-4-5        0.754       0.712       0.929       0.756       91
-gpt-5.4-mini            0.847       0.604       0.929       0.719       92
-deepseek-v4-flash       0.587       0.132       1.000       0.379       88
+claude-haiku-4-5        0.771       0.701       0.929       0.754      100
+gpt-5.4-mini            0.873       0.589       0.929       0.722      100
+deepseek-v4-flash       0.506       0.125       1.000       0.362      100
 
 (tracks show mean score in [0,1]; per-task n varies)
 
 exit-status breakdown:
-  claude-haiku-4-5   Submitted:48, LimitsExceeded:41, RepeatedFormatError:2
-  gpt-5.4-mini       Submitted:70, LimitsExceeded:22
-  deepseek-v4-flash  LimitsExceeded:68, Submitted:20
+  claude-haiku-4-5   Submitted:53, LimitsExceeded:45, RepeatedFormatError:2
+  gpt-5.4-mini       Submitted:75, LimitsExceeded:25
+  deepseek-v4-flash  LimitsExceeded:76, Submitted:22, runner_rc=-9:2
 ```
-*(perf n so far: gpt 25, claude 23, deepseek 21 of 30 — partial; perf cell still volatile.)*
+*(deepseek perf includes 2 hung runs scored 0.0 — see status note; re-run in progress,
+deepseek perf will rise modestly when patched.)*
 
-Early observations (perf still filling in):
-- **Overall ranking is stable:** `claude-haiku-4-5` (0.76) ≳ `gpt-5.4-mini` (0.72) ≫
-  `deepseek-v4-flash` (0.38). Claude and gpt are close; deepseek trails on authoring.
-- **Debug (complete) discriminates cleanly:** `deepseek-v4-flash` **1.00**,
-  `claude-haiku-4-5`/`gpt-5.4-mini` **0.93** — all three repair planted bugs well; this is
-  the easiest track.
-- **Implement separates the field:** `claude-haiku-4-5` (0.71) ≳ `gpt-5.4-mini` (0.60) ≫
-  `deepseek-v4-flash` (0.13). DeepSeek can *fix* kernels but rarely *authors* one from
-  scratch within budget — it `LimitsExceeded` on 68/88 runs vs Submitting only 20.
-- **Perf is the hardest track and most discriminative — and still shifting:** the perf
-  ranking has swapped between refreshes as new shapes land (now `gpt` 0.85 > `claude` 0.75
-  > `deepseek` 0.59), i.e. all three sit on partial credit between baseline and the
-  repo-tuned target. No model is pinned at 1.0, confirming the correctness-gated
-  log-speedup gate is live and far from saturated. Treat perf as provisional until the
-  last ~5 shapes/model finish.
-- **Track spread** (debug ≫ implement ≳ perf, model-dependent) shows the benchmark is
-  informative rather than saturated.
+Observations:
+- **Overall ranking:** `claude-haiku-4-5` (0.75) ≳ `gpt-5.4-mini` (0.72) ≫
+  `deepseek-v4-flash` (0.36). Claude and gpt are close; deepseek trails badly on authoring.
+- **Debug is the easiest, least-discriminative track:** `deepseek-v4-flash` **1.00**,
+  `claude`/`gpt` **0.93** — all three repair planted bugs well.
+- **Implement separates the field:** `claude` (0.70) ≳ `gpt` (0.59) ≫ `deepseek` (0.13).
+  DeepSeek can *fix* kernels but rarely *authors* one from scratch within budget — it
+  `LimitsExceeded` on 76/100 runs vs Submitting only 22.
+- **Perf is the hardest, most discriminative track:** `gpt` 0.87 > `claude` 0.77 >
+  `deepseek` 0.51 (last depressed by the 2 hung runs). No model is pinned at 1.0 — partial
+  credit between baseline and the repo-tuned target confirms the correctness-gated
+  log-speedup gate is live and far from saturated.
+- **Net:** the benchmark cleanly ranks three same-tier "cheap" models and exposes a sharp
+  *author-vs-repair* capability gap (deepseek: debug 1.00 / implement 0.13) — informative,
+  not saturated.
 
 ## 8. Shortcomings
 - **Perf diversity:** the perf track is GEMM-only (fp16/bf16 × shapes/detune). Robust and
@@ -145,6 +142,11 @@ Early observations (perf still filling in):
   `@tilelang.jit` API surface is untested.
 - **Contamination:** TileLang is public; mitigated by private graders, offline agent, and
   (for debug) novel planted bugs, but perfect isolation isn't guaranteed.
+- **No wall-clock cap on the LLM call:** the `--step-limit`/`--cost-limit`/per-command
+  `--timeout` caps bound the agent loop and each shell command, but a single hung *model
+  request* (stalled upstream API) has no timeout — 2/300 runs (deepseek perf) hung for
+  >1 h and were killed/scored 0.0 then re-run. Fix is a per-request timeout + retry in the
+  model wrapper (one-line `litellm` `request_timeout`).
 
 ## 9. Improvements / future work
 - Add a **historical-PR regression track** with per-task editable builds (highest authenticity).
