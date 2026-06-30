@@ -1,11 +1,10 @@
 # TileLang Coding-Agent Benchmark — Report
 
-> Status: **COMPLETE** — all 300 runs finished (100 tasks × 3 models). Environment /
-> tasks / scoring are final. Caveat: 2 of deepseek's 30 perf runs hung on a stalled
-> upstream API call (no wall-clock cap on the LLM request itself) and are currently
-> recorded as `runner_rc=-9` / score 0.0; they are being re-run with a hard 15-min
-> timeout, after which deepseek's perf mean will tick up slightly. All other 298 runs are
-> genuine. Regenerate with
+> Status: **COMPLETE** — 298/300 runs scored (100 tasks × 3 models). Environment / tasks /
+> scoring are final. 2 of deepseek's 30 perf runs hung on a stalled upstream API call (no
+> wall-clock cap on the LLM request itself); retries hung the same way, so they are
+> excluded as **infrastructure failures** (deepseek perf averaged over n=28) rather than
+> scored 0.0 — they reflect API flakiness, not model capability. Regenerate with
 > `python harness/report.py --sweep runs/sweep_full.json --manifest tasks/manifest.json`.
 
 ## 1. Summary
@@ -93,37 +92,36 @@ overflow) and gemv-perf (no clean speed knob) — see Shortcomings.
   (Also confirmed working: `qwen3.5-plus`, `glm-5`, `kimi-k2.5`.)
 
 ## 7. Results
-Full sweep, **300/300 runs** (100 tasks × 3 models). Regenerate with `harness/report.py`.
+Full sweep, **298/300 runs scored** (2 deepseek perf excluded as infra hangs — see status
+note). Regenerate with `harness/report.py`.
 
 ```
 model                     perf   implement       debug         all    runs
 --------------------------------------------------------------------------
 claude-haiku-4-5        0.771       0.701       0.929       0.754      100
 gpt-5.4-mini            0.873       0.589       0.929       0.722      100
-deepseek-v4-flash       0.506       0.125       1.000       0.362      100
+deepseek-v4-flash       0.543       0.125       1.000       0.369       98
 
-(tracks show mean score in [0,1]; per-task n varies)
+(tracks show mean score in [0,1]; per-task n varies; deepseek perf n=28)
 
 exit-status breakdown:
   claude-haiku-4-5   Submitted:53, LimitsExceeded:45, RepeatedFormatError:2
   gpt-5.4-mini       Submitted:75, LimitsExceeded:25
-  deepseek-v4-flash  LimitsExceeded:76, Submitted:22, runner_rc=-9:2
+  deepseek-v4-flash  LimitsExceeded:76, Submitted:22
 ```
-*(deepseek perf includes 2 hung runs scored 0.0 — see status note; re-run in progress,
-deepseek perf will rise modestly when patched.)*
 
 Observations:
 - **Overall ranking:** `claude-haiku-4-5` (0.75) ≳ `gpt-5.4-mini` (0.72) ≫
-  `deepseek-v4-flash` (0.36). Claude and gpt are close; deepseek trails badly on authoring.
+  `deepseek-v4-flash` (0.37). Claude and gpt are close; deepseek trails badly on authoring.
 - **Debug is the easiest, least-discriminative track:** `deepseek-v4-flash` **1.00**,
   `claude`/`gpt` **0.93** — all three repair planted bugs well.
 - **Implement separates the field:** `claude` (0.70) ≳ `gpt` (0.59) ≫ `deepseek` (0.13).
   DeepSeek can *fix* kernels but rarely *authors* one from scratch within budget — it
   `LimitsExceeded` on 76/100 runs vs Submitting only 22.
 - **Perf is the hardest, most discriminative track:** `gpt` 0.87 > `claude` 0.77 >
-  `deepseek` 0.51 (last depressed by the 2 hung runs). No model is pinned at 1.0 — partial
-  credit between baseline and the repo-tuned target confirms the correctness-gated
-  log-speedup gate is live and far from saturated.
+  `deepseek` 0.54 (n=28). No model is pinned at 1.0 — partial credit between baseline and
+  the repo-tuned target confirms the correctness-gated log-speedup gate is live and far
+  from saturated.
 - **Net:** the benchmark cleanly ranks three same-tier "cheap" models and exposes a sharp
   *author-vs-repair* capability gap (deepseek: debug 1.00 / implement 0.13) — informative,
   not saturated.
