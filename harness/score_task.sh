@@ -13,12 +13,18 @@ WORK="${1:?usage: score_task.sh <workspace_dir> <task_dir>}"
 TASK_DIR="${2:?usage: score_task.sh <workspace_dir> <task_dir>}"
 [ -f "$WORK/env.sh" ]        || die "no env.sh in workspace: $WORK"
 [ -f "$TASK_DIR/task.json" ] || die "no task.json in task dir: $TASK_DIR"
-[ -f "$TASK_DIR/problem.py" ]|| die "no problem.py in task dir: $TASK_DIR"
 
-# Source the task env for cache isolation + GPU pin, but run the scorer with the
-# grader paths pointing at the private TASK_DIR (absolute, outside the workspace).
+# Resolve the grader (answer key). Prefer the PRIVATE graders dir (outside the repo,
+# not discoverable by a browsing agent); fall back to the in-tree copy for back-compat.
 TASK_JSON="$(cd "$TASK_DIR" && pwd)/task.json"
-PROBLEM="$(cd "$TASK_DIR" && pwd)/problem.py"
+TID="$(python3 -c "import json;print(json.load(open('$TASK_JSON'))['id'])")"
+if [ -f "$GRADERS_DIR/$TID/problem.py" ]; then
+  PROBLEM="$GRADERS_DIR/$TID/problem.py"
+elif [ -f "$TASK_DIR/problem.py" ]; then
+  PROBLEM="$(cd "$TASK_DIR" && pwd)/problem.py"
+else
+  die "no problem.py in $GRADERS_DIR/$TID or $TASK_DIR"
+fi
 SOLUTION="$(cd "$WORK" && pwd)/solution.py"
 
 # Dispatch to the scorer for this task's track.

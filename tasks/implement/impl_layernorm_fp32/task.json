@@ -1,9 +1,9 @@
 {
-  "id": "impl_rowmax_fp16",
+  "id": "impl_layernorm_fp32",
   "track": "implement",
   "entrypoint": "solution.py",
   "grader": "problem.py",
-  "prompt": "Implement build(M, N) computing the row rowmax of an MxN fp16 tensor (output [M]). kernel(A) -> C.",
+  "prompt": "Implement build(M, N) computing row-wise layernorm over N of an MxN fp32 tensor (output MxN). kernel(A) -> C.",
   "tolerance": {
     "rtol": 0.02,
     "atol": 0.02

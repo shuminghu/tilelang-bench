@@ -13,6 +13,11 @@ GOLDEN_VENV="${GOLDEN_VENV:-$ROOT/.venv}"      # read-only env shared by perf ta
 TASKS_DIR="${TASKS_DIR:-$ROOT/tasks}"
 RUNS_DIR="${RUNS_DIR:-$ROOT/runs}"
 
+# Private answer-keys root, OUTSIDE the repo tree so a browsing agent can't discover
+# the grader oracle/target via `ls ../..`. Open-book (docs/examples/installed package)
+# is fine; only the per-task answer key lives here. Regenerable from gen_tasks.py.
+export GRADERS_DIR="${GRADERS_DIR:-$HOME/.tl_graders}"
+
 # Shared, content-addressed ccache (safe to share across tasks; speeds rebuilds).
 export CCACHE_DIR="${CCACHE_DIR:-$ROOT/.ccache}"
 

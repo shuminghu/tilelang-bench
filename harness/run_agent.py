@@ -35,6 +35,7 @@ SENSITIVE = [
     "HUGGINGFACE_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "WANDB_API_KEY",
     "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN",
     "GOOGLE_API_KEY", "GEMINI_API_KEY", "OPENROUTER_API_KEY", "NETRC",
+    "GRADERS_DIR",   # never reveal the private answer-key path to the agent
 ]
 
 

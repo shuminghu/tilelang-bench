@@ -11,12 +11,15 @@ Tracks generated here:
 (regression tasks are built separately by gen_regression.py.)
 """
 import json
+import os
 import shutil
 from pathlib import Path
-from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS = ROOT / "tasks"
+# Private answer-keys root, OUTSIDE the repo so a browsing agent can't discover it
+# via `ls ../..`. Regenerable from this script (the source of truth).
+GRADERS = Path(os.environ.get("GRADERS_DIR", Path.home() / ".tl_graders"))
 
 IMPORTS = "import torch\nimport tilelang\nimport tilelang.language as T\n"
 
@@ -99,7 +102,7 @@ def _build(N, K, bN=64):
 
 def k_softmax(dt):
     return f'''DT = "{dt}"
-def _build(M, N, bM=8, threads=128):
+def _build(M, N, bM=1, threads=128):
     @T.prim_func
     def main(A: T.Tensor((M, N), DT), C: T.Tensor((M, N), DT)):
         with T.Kernel(T.ceildiv(M, bM), threads=threads) as bx:
@@ -217,11 +220,14 @@ def write_task(track, tid, prompt, kernel_def, data_def, shapes, *,
     if d.exists():
         shutil.rmtree(d)
     d.mkdir(parents=True)
-    # problem.py: private grader (kernel oracle + data + anchors/SHAPES)
+    # problem.py is the ANSWER KEY (kernel oracle + data + anchors/SHAPES). Write it to
+    # the PRIVATE graders dir outside the repo, not into the agent-visible task dir.
     prob = IMPORTS + "\n" + kernel_def + "\n" + data_def + f"\nSHAPES = {shapes}\n"
     if anchors:
         prob += anchors
-    (d / "problem.py").write_text(prob)
+    gdir = GRADERS / tid
+    gdir.mkdir(parents=True, exist_ok=True)
+    (gdir / "problem.py").write_text(prob)
     # solution.py: agent-visible starter
     (d / "solution.py").write_text(starter)
     task = {"id": tid, "track": track, "entrypoint": "solution.py",
@@ -277,7 +283,7 @@ FUSED = {
 def k_reduce(redop, post, dt):
     """Row reduction MxN -> M.  redop in {reduce_sum, reduce_max}; post applied to r[i]."""
     return f'''DT = "{dt}"
-def _build(M, N, bM=8, threads=128):
+def _build(M, N, bM=1, threads=128):
     @T.prim_func
     def main(A: T.Tensor((M, N), DT), C: T.Tensor((M,), DT)):
         with T.Kernel(T.ceildiv(M, bM), threads=threads) as bx:
@@ -303,6 +309,59 @@ REDUCE = {
     "rowsum":  ("reduce_sum", "r[i]",       "a.float().sum(dim=1).to(a.dtype)"),
     "rowmax":  ("reduce_max", "r[i]",       "a.float().amax(dim=1).to(a.dtype)"),
     "rowmean": ("reduce_sum", "r[i] / N",   "a.float().mean(dim=1).to(a.dtype)"),
+}
+
+
+def k_rmsnorm(dt):
+    return f'''DT = "{dt}"
+def _build(M, N, threads=128):
+    @T.prim_func
+    def main(A: T.Tensor((M, N), DT), C: T.Tensor((M, N), DT)):
+        with T.Kernel(M, threads=threads) as bx:
+            x = T.alloc_fragment((1, N), "float")
+            xs = T.alloc_fragment((1, N), "float")
+            s = T.alloc_fragment((1,), "float")
+            T.copy(A[bx, 0], x)
+            for i, j in T.Parallel(1, N):
+                xs[i, j] = x[i, j] * x[i, j]
+            T.reduce_sum(xs, s, dim=1)
+            for i in T.Parallel(1):
+                s[i] = T.rsqrt(s[i] / N + 1e-6)
+            for i, j in T.Parallel(1, N):
+                x[i, j] = x[i, j] * s[i]
+            T.copy(x, C[bx, 0])
+    return tilelang.compile(main, out_idx=[1])
+'''
+
+
+def k_layernorm(dt):
+    return f'''DT = "{dt}"
+def _build(M, N, threads=128):
+    @T.prim_func
+    def main(A: T.Tensor((M, N), DT), C: T.Tensor((M, N), DT)):
+        with T.Kernel(M, threads=threads) as bx:
+            x = T.alloc_fragment((1, N), "float")
+            c = T.alloc_fragment((1, N), "float")
+            mean = T.alloc_fragment((1,), "float")
+            var = T.alloc_fragment((1,), "float")
+            T.copy(A[bx, 0], x)
+            T.reduce_sum(x, mean, dim=1)
+            for i in T.Parallel(1):
+                mean[i] = mean[i] / N
+            for i, j in T.Parallel(1, N):
+                c[i, j] = (x[i, j] - mean[i]) * (x[i, j] - mean[i])
+            T.reduce_sum(c, var, dim=1)
+            for i in T.Parallel(1):
+                var[i] = T.rsqrt(var[i] / N + 1e-5)
+            for i, j in T.Parallel(1, N):
+                x[i, j] = (x[i, j] - mean[i]) * var[i]
+            T.copy(x, C[bx, 0])
+    return tilelang.compile(main, out_idx=[1])
+'''
+
+NORM = {
+    "rmsnorm":   (k_rmsnorm,   "a * torch.rsqrt(a.float().pow(2).mean(-1, keepdim=True) + 1e-6).to(a.dtype)"),
+    "layernorm": (k_layernorm, "torch.nn.functional.layer_norm(a.float(), (a.shape[1],)).to(a.dtype)"),
 }
 
 # implement-track case grids (multiple shapes for partial credit; include ragged)
@@ -342,6 +401,12 @@ def gen_implement():
                 k_reduce(redop, post, dt), data_reduce(dt, ref_expr), CASES_SOFTMAX,
                 tol=(2e-2, 2e-2),
                 starter=_stub("build(M, N)", f"row {name} MxN -> [M], {tag}")))
+        for name, (kfn, ref_expr) in NORM.items():
+            ids.append(write_task("implement", f"impl_{name}_{tag}",
+                f"Implement build(M, N) computing row-wise {name} over N of an MxN {tag} "
+                f"tensor (output MxN). kernel(A) -> C.",
+                kfn(dt), data_2d_unary(dt, ref_expr), CASES_SOFTMAX, tol=(2e-2, 2e-2),
+                starter=_stub("build(M, N)", f"row-wise {name} over N, MxN -> MxN, {tag}")))
         ids.append(write_task("implement", f"impl_bias_{tag}",
             f"Implement build(M, N): C[m,n] = A[m,n] + bias[n] ({tag}). kernel(A, bias) -> C.",
             k_bias(dt), data_bias(dt), CASES_2D,
@@ -454,7 +519,9 @@ def write_debug(tid, prompt, right_def, wrong_def, data_def, cases, sig, args, t
     if d.exists():
         shutil.rmtree(d)
     d.mkdir(parents=True)
-    (d / "problem.py").write_text(
+    gdir = GRADERS / tid
+    gdir.mkdir(parents=True, exist_ok=True)
+    (gdir / "problem.py").write_text(
         IMPORTS + "\n" + right_def + "\n" + data_def + f"\nSHAPES = {cases}\n")
     starter = ('"""This TileLang kernel has a BUG -- fix it. Edit only this file.\n\n'
                f'Spec: {prompt}\nThe kernel compiles but produces wrong results for some '

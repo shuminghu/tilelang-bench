@@ -31,7 +31,8 @@ ROOT = HARNESS.parent
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--models", required=True)
-    ap.add_argument("--tasks", required=True)
+    ap.add_argument("--tasks", default=None, help="comma-separated task dirs")
+    ap.add_argument("--manifest", default=None, help="read task dirs from a manifest.json")
     ap.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
     ap.add_argument("--out", default="runs/sweep_parallel.json")
     ap.add_argument("--api-base", default=os.getenv("LLM_API_BASE"))
@@ -42,7 +43,11 @@ def main():
     args = ap.parse_args()
 
     models = [m.strip() for m in args.models.split(",") if m.strip()]
-    tasks = [t.strip() for t in args.tasks.split(",") if t.strip()]
+    if args.manifest:
+        man = json.loads(Path(args.manifest).read_text())
+        tasks = [t["dir"] for t in man["tasks"]]
+    else:
+        tasks = [t.strip() for t in args.tasks.split(",") if t.strip()]
     gpus = [g.strip() for g in args.gpus.split(",") if g.strip()]
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)

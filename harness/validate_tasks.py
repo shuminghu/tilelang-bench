@@ -13,6 +13,7 @@ Writes one JSON line per task to --out. Shard with --shard k/n to split across G
 import argparse
 import importlib.util
 import json
+import os
 import statistics as st
 from pathlib import Path
 
@@ -49,7 +50,11 @@ def validate(task_dir):
     import torch
     tj = json.load(open(task_dir / "task.json"))
     track, tol = tj.get("track", "perf"), tj["tolerance"]
-    prob = load(task_dir / "problem.py", "problem_" + task_dir.name)
+    graders = Path(os.environ.get("GRADERS_DIR", Path.home() / ".tl_graders"))
+    prob_path = graders / tj["id"] / "problem.py"
+    if not prob_path.exists():
+        prob_path = task_dir / "problem.py"   # back-compat
+    prob = load(prob_path, "problem_" + task_dir.name)
     res = {"id": tj["id"], "track": track, "dir": str(task_dir), "ok": False}
     try:
         if track == "perf":
