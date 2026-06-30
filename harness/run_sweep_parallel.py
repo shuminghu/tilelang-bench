@@ -40,6 +40,8 @@ def main():
     ap.add_argument("--step-limit", type=int, default=30)
     ap.add_argument("--cost-limit", type=float, default=1.0)
     ap.add_argument("--repeats", type=int, default=1, help="runs per (model,task) for noise")
+    ap.add_argument("--tag", default="", help="suffix for run_id/workspace, to isolate "
+                    "concurrent sweeps that share the same NFS (e.g. a hostname)")
     args = ap.parse_args()
 
     models = [m.strip() for m in args.models.split(",") if m.strip()]
@@ -73,7 +75,8 @@ def main():
         gpu = gpu_q.get()
         try:
             suffix = f"__r{rep}" if args.repeats > 1 else ""
-            run_id = f"{model.replace('/', '_')}__{Path(task).name}{suffix}"
+            tag = f"__{args.tag}" if args.tag else ""
+            run_id = f"{model.replace('/', '_')}__{Path(task).name}{suffix}{tag}"
             logp = ROOT / "runs" / Path(task).name / f"{run_id}.runlog"
             logp.parent.mkdir(parents=True, exist_ok=True)
             env = os.environ.copy()
